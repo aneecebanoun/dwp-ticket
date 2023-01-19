@@ -55,15 +55,15 @@ class TicketServiceTests {
         assertThrows(InvalidPurchaseException.class, () -> ticketService.purchaseTickets(INVALID_TOO_MANY_TICKETS_ID, invalidDataWithTooManyTickets));
     }
 
-    //As per requirement no other public method so the only way to test private method is through the reflection
+    //As per requirement no other public methods allowed, so the only way to test private method is through the reflection
     //Ideally testing only for public methods and grouped by business logic as above tests
     @Test
     void testCalculation() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         ticketService = spy(ticketService);
         Method groupTicketsMethod = TicketServiceImpl.class.getDeclaredMethod("groupTickets", List.class);
         groupTicketsMethod.setAccessible(true);
-        List<TicketTypeRequest> invalidDataWithNoAdults = ticketServiceTestData.get(VALID_BOOKING_ID);
-        Map<TicketTypeRequest.Type, List<TicketTypeRequest>> groupTickets = (Map<TicketTypeRequest.Type, List<TicketTypeRequest>>) groupTicketsMethod.invoke(ticketService, invalidDataWithNoAdults);
+        List<TicketTypeRequest> validData = ticketServiceTestData.get(VALID_BOOKING_ID);
+        Map<TicketTypeRequest.Type, List<TicketTypeRequest>> groupTickets = (Map<TicketTypeRequest.Type, List<TicketTypeRequest>>) groupTicketsMethod.invoke(ticketService, validData);
         Method getTotalAmountToPayMethod = TicketServiceImpl.class.getDeclaredMethod("getTotalAmountToPay", Map.class);
         getTotalAmountToPayMethod.setAccessible(true);
         getTotalAmountToPayMethod.invoke(ticketService, groupTickets);
